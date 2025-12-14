@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Trading Bot - Copia a los KOLs en Solana</title>
+    <title>Quantum Trading Bot - Copy Trading en Solana</title>
 
     <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,6 +47,40 @@
             font-family: 'Orbitron', monospace;
         }
 
+        /* Language Switcher */
+        .lang-switcher {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .lang-btn {
+            background: rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .lang-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            color: black;
+            font-weight: bold;
+        }
+
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .text-center-mobile {
@@ -55,6 +89,7 @@
 
             .mobile-full-width {
                 width: 100% !important;
+                max-width: 300px;
             }
 
             .mobile-spacing {
@@ -398,7 +433,6 @@
         @media (max-width: 768px) {
             .cyber-button {
                 width: 100%;
-                max-width: 300px;
             }
         }
 
@@ -470,20 +504,6 @@
             60% { transform: translateY(-5px); }
         }
 
-        /* Mobile Navigation */
-        .mobile-menu {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .desktop-menu {
-                display: none;
-            }
-            .mobile-menu {
-                display: block;
-            }
-        }
-
         /* Copy Trading Highlight */
         .copy-highlight {
             background: linear-gradient(135deg, rgba(255, 0, 255, 0.2) 0%, rgba(255, 255, 0, 0.2) 100%);
@@ -495,9 +515,130 @@
             from { box-shadow: 0 0 10px rgba(255, 0, 255, 0.5); }
             to { box-shadow: 0 0 20px rgba(255, 0, 255, 0.8), 0 0 30px rgba(255, 255, 0, 0.5); }
         }
+
+        /* Payment Modal */
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .payment-content {
+            background: var(--dark-bg);
+            border: 2px solid var(--primary-glow);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .crypto-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .crypto-option:hover {
+            border-color: var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        .crypto-address {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-glow);
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: black;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 3px solid var(--primary-glow);
+            z-index: 10000;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Stats Counter */
+        .stat-counter {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        /* Live Users Animation */
+        @keyframes liveIndicator {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #00ff00;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: liveIndicator 2s infinite;
+        }
     </style>
 </head>
 <body class="bg-gray-900">
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" data-lang="pt">🇧🇷 PT</button>
+        <button class="lang-btn" data-lang="fr">🇫🇷 FR</button>
+        <button class="lang-btn" data-lang="de">🇩🇪 DE</button>
+    </div>
 
     <!-- Particles Canvas -->
     <canvas id="particles-canvas"></canvas>
@@ -513,17 +654,17 @@
             </div>
 
             <!-- Desktop Menu -->
-            <div class="desktop-menu hidden md:flex space-x-8">
-                <a href="#features" class="hover:text-cyan-400 transition">Features</a>
-                <a href="#pricing" class="hover:text-cyan-400 transition">Pricing</a>
-                <a href="#demo" class="hover:text-cyan-400 transition">Demo</a>
-                <a href="#contact" class="hover:text-cyan-400 transition">Contact</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#features" class="hover:text-cyan-400 transition" data-translate="nav_features">Features</a>
+                <a href="#pricing" class="hover:text-cyan-400 transition" data-translate="nav_pricing">Pricing</a>
+                <a href="#payment" class="hover:text-cyan-400 transition" data-translate="nav_payment">Payment</a>
+                <a href="#testimonials" class="hover:text-cyan-400 transition" data-translate="nav_testimonials">Testimonials</a>
             </div>
 
             <a href="https://t.me/copyjesus_bot" target="_blank" class="cyber-button">
                 <span class="relative z-10 flex items-center text-sm md:text-base">
                     <i class="fab fa-telegram mr-1 md:mr-2"></i>
-                    Launch Bot
+                    <span data-translate="launch_bot">Launch Bot</span>
                 </span>
             </a>
         </div>
@@ -544,10 +685,10 @@
             <div class="mb-6 md:mb-8">
                 <h1 class="glitch orbitron text-center-mobile" data-text="QUANTUM">QUANTUM</h1>
                 <h2 class="text-4xl md:text-6xl lg:text-8xl font-bold mt-4 orbitron gradient-text text-center-mobile">COPY TRADING</h2>
-                <p class="text-lg md:text-2xl lg:text-4xl mt-4 text-gray-300 text-center-mobile">EL PODER DE LOS KOLS EN TUS MANOS</p>
+                <p class="text-lg md:text-2xl lg:text-4xl mt-4 text-gray-300 text-center-mobile" data-translate="hero_subtitle">EL PODER DE LOS KOLS EN TUS MANOS</p>
             </div>
 
-            <p class="text-lg md:text-xl text-gray-400 mb-8 md:mb-12 max-w-4xl mx-auto text-center-mobile mobile-text-sm">
+            <p class="text-lg md:text-xl text-gray-400 mb-8 md:mb-12 max-w-4xl mx-auto text-center-mobile mobile-text-sm" data-translate="hero_description">
                 🤖 <strong>Bot en Telegram</strong> que <strong>copia automáticamente</strong> las operaciones de tus influencers favoritos.
                 Especializado en <strong>Solana</strong>, opera en <strong>Pump.fun</strong> y todos los DEXs principales.
                 ¡Consigue las <strong>ganancias</strong> de los profesionales!
@@ -557,31 +698,34 @@
                 <a href="https://t.me/copyjesus_bot" target="_blank" class="cyber-button glow-cyan mobile-full-width">
                     <span class="relative z-10 flex items-center justify-center">
                         <i class="fab fa-telegram mr-2"></i>
-                        Copiar KOLs Ahora
+                        <span data-translate="cta_primary">Copiar KOLs Ahora</span>
                     </span>
                 </a>
-                <button onclick="scrollToSection('demo')" class="cyber-button mobile-full-width">
-                    <span class="relative z-10">Ver Demo</span>
+                <button onclick="openPaymentModal()" class="cyber-button mobile-full-width">
+                    <span class="relative z-10" data-translate="cta_secondary">Ver Planes</span>
                 </button>
             </div>
 
             <!-- Mobile Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto text-center-mobile">
                 <div class="glass p-4 md:p-6 floating">
-                    <div class="text-2xl md:text-3xl font-bold gradient-text">📱</div>
-                    <div class="text-sm md:text-base text-gray-400 mt-2">Telegram</div>
+                    <div class="text-2xl md:text-3xl font-bold gradient-text">
+                        <span class="live-indicator"></span>
+                        <span class="user-count">1,527</span>
+                    </div>
+                    <div class="text-sm md:text-base text-gray-400 mt-2" data-translate="stat_users">Usuarios Activos</div>
                 </div>
                 <div class="glass p-4 md:p-6 floating" style="animation-delay: 0.5s">
-                    <div class="text-2xl md:text-3xl font-bold gradient-text">⚡</div>
-                    <div class="text-sm md:text-base text-gray-400 mt-2">Pump.fun</div>
+                    <div class="text-2xl md:text-3xl font-bold gradient-text">📱</div>
+                    <div class="text-sm md:text-base text-gray-400 mt-2" data-translate="stat_telegram">100% Telegram</div>
                 </div>
                 <div class="glass p-4 md:p-6 floating" style="animation-delay: 1s">
                     <div class="text-2xl md:text-3xl font-bold gradient-text">🔄</div>
-                    <div class="text-sm md:text-base text-gray-400 mt-2">Copy KOLs</div>
+                    <div class="text-sm md:text-base text-gray-400 mt-2" data-translate="stat_copy">Copy KOLs</div>
                 </div>
                 <div class="glass p-4 md:p-6 floating" style="animation-delay: 1.5s">
                     <div class="text-2xl md:text-3xl font-bold gradient-text">💰</div>
-                    <div class="text-sm md:text-base text-gray-400 mt-2">Profit</div>
+                    <div class="text-sm md:text-base text-gray-400 mt-2" data-translate="stat_profit">Profit</div>
                 </div>
             </div>
         </div>
@@ -596,27 +740,27 @@
         <div class="container mx-auto px-4 md:px-6">
             <div class="copy-highlight glass p-6 md:p-8 mb-12">
                 <h3 class="text-2xl md:text-3xl font-bold mb-4 text-center gradient-text">
-                    🎯 <strong>CARACTERÍSTICA PRINCIPAL</strong> 🎯
+                    🎯 <span data-translate="main_feature_title">CARACTERÍSTICA PRINCIPAL</span> 🎯
                 </h3>
-                <p class="text-lg md:text-xl text-center mb-6">
+                <p class="text-lg md:text-xl text-center mb-6" data-translate="main_feature_description">
                     Conecta los <strong>canales de tus KOLs favoritos</strong> y el bot <strong>copiará cada operación</strong> que hagan
                 </p>
                 <div class="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8">
                     <div class="text-center">
                         <i class="fab fa-telegram text-4xl md:text-5xl text-blue-400 mb-2"></i>
-                        <p class="text-sm md:text-base">Añade Canales</p>
+                        <p class="text-sm md:text-base" data-translate="step1">Añade Canales</p>
                     </div>
                     <i class="fas fa-arrow-right text-2xl text-cyan-400 hidden md:block"></i>
                     <i class="fas fa-arrow-down text-2xl text-cyan-400 md:hidden"></i>
                     <div class="text-center">
                         <i class="fas fa-robot text-4xl md:text-5xl text-magenta-400 mb-2"></i>
-                        <p class="text-sm md:text-base">Bot Detecta</p>
+                        <p class="text-sm md:text-base" data-translate="step2">Bot Detecta</p>
                     </div>
                     <i class="fas fa-arrow-right text-2xl text-cyan-400 hidden md:block"></i>
                     <i class="fas fa-arrow-down text-2xl text-cyan-400 md:hidden"></i>
                     <div class="text-center">
                         <i class="fas fa-chart-line text-4xl md:text-5xl text-green-400 mb-2"></i>
-                        <p class="text-sm md:text-base">Tú Ganas</p>
+                        <p class="text-sm md:text-base" data-translate="step3">Tú Ganas</p>
                     </div>
                 </div>
             </div>
@@ -626,7 +770,7 @@
     <!-- Features Section -->
     <section id="features" class="py-12 md:py-20 relative">
         <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile" data-translate="features_title">
                 CARACTERÍSTICAS CUÁNTICAS
             </h2>
 
@@ -635,48 +779,48 @@
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fab fa-telegram text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Telegram Native</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">100% funcional en Telegram. Sin necesidad de apps adicionales. Recibe alertas y ejecuta desde tu chat.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_telegram">Telegram Native</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_telegram_desc">100% funcional en Telegram. Sin necesidad de apps adicionales. Recibe alertas y ejecuta desde tu chat.</p>
                 </div>
 
                 <div class="glass p-6 md:p-8 group hover:scale-105 transition-all duration-300 text-center">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-magenta-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fas fa-users text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Copia KOLs</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Conecta canales de influencers y copia sus trades en tiempo real. Siempre un paso adelante del mercado.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_copy">Copia KOLs</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_copy_desc">Conecta canales de influencers y copia sus trades en tiempo real. Siempre un paso adelante del mercado.</p>
                 </div>
 
                 <div class="glass p-6 md:p-8 group hover:scale-105 transition-all duration-300 text-center">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fas fa-fire text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Pump.fun Expert</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Especializado en Pump.fun. Detecta las nuevas tendencias antes de que exploten. Máximo profit en memes.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_pump">Pump.fun Expert</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_pump_desc">Especializado en Pump.fun. Detecta las nuevas tendencias antes de que exploten. Máximo profit en memes.</p>
                 </div>
 
                 <div class="glass p-6 md:p-8 group hover:scale-105 transition-all duration-300 text-center">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fas fa-bolt text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Solana Speed</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Ejecución en menos de 1 segundo. Optimizado para la velocidad de Solana. Nunca te quedes afuera.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_speed">Solana Speed</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_speed_desc">Ejecución en menos de 1 segundo. Optimizado para la velocidad de Solana. Nunca te quedes afuera.</p>
                 </div>
 
                 <div class="glass p-6 md:p-8 group hover:scale-105 transition-all duration-300 text-center">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fas fa-coins text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Multi-DEX</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Opera en Raydium, Orca, Serum, Jupiter, Meteora y Pump.fun. Siempre el mejor precio.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_multi">Multi-DEX</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_multi_desc">Opera en Raydium, Orca, Serum, Jupiter, Meteora y Pump.fun. Siempre el mejor precio.</p>
                 </div>
 
                 <div class="glass p-6 md:p-8 group hover:scale-105 transition-all duration-300 text-center">
                     <div class="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:rotate-180 transition-transform duration-500">
                         <i class="fas fa-shield-alt text-2xl md:text-3xl text-white"></i>
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-4">Seguro Total</h3>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Tus fondos siempre en tu wallet. Solo das permisos de trading. Sin riesgos de custodia.</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-4" data-translate="feature_secure">Seguro Total</h3>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="feature_secure_desc">Tus fondos siempre en tu wallet. Solo das permisos de trading. Sin riesgos de custodia.</p>
                 </div>
             </div>
         </div>
@@ -693,7 +837,7 @@
         </div>
 
         <div class="container mx-auto px-4 md:px-6 relative z-10">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile" data-translate="dex_title">
                 DEXs & PLATFORMS
             </h2>
 
@@ -701,12 +845,12 @@
                 <div class="glass-dark p-4 md:p-6 text-center hover:glow-cyan transition-all duration-300">
                     <div class="text-2xl md:text-3xl mb-2">📱</div>
                     <h3 class="text-base md:text-lg font-bold mb-2">Telegram</h3>
-                    <p class="text-xs md:text-sm text-gray-400">100% Native</p>
+                    <p class="text-xs md:text-sm text-gray-400" data-translate="dex_telegram">100% Native</p>
                 </div>
                 <div class="glass-dark p-4 md:p-6 text-center hover:glow-cyan transition-all duration-300">
                     <div class="text-2xl md:text-3xl mb-2">🔥</div>
                     <h3 class="text-base md:text-lg font-bold mb-2">Pump.fun</h3>
-                    <p class="text-xs md:text-sm text-gray-400">#1 Platform</p>
+                    <p class="text-xs md:text-sm text-gray-400" data-translate="dex_pump">#1 Platform</p>
                 </div>
                 <div class="glass-dark p-4 md:p-6 text-center hover:glow-cyan transition-all duration-300">
                     <div class="text-2xl md:text-3xl mb-2">📊</div>
@@ -735,142 +879,131 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-12 md:py-20 relative">
         <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile" data-translate="pricing_title">
                 PLANES CUÁNTICOS
             </h2>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <!-- Free Plan -->
                 <div class="glass p-6 md:p-8 hover:scale-105 transition-all duration-300 text-center-mobile">
-                    <h3 class="text-xl md:text-2xl font-bold mb-2">⚪ Explorer</h3>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">⚪ <span data-translate="plan_free">Explorer</span></h3>
                     <div class="text-3xl md:text-4xl font-bold mb-6">$0<span class="text-sm md:text-lg text-gray-400">/gratis</span></div>
                     <ul class="space-y-2 md:space-y-3 mb-6 md:mb-8 text-sm md:text-base text-gray-300 text-center-mobile">
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>3 trades/día</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>1 canal KOL</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Telegram básico</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Pump.fun limitado</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_free_1">3 trades/día</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_free_2">1 canal KOL</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_free_3">Telegram básico</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_free_4">Pump.fun limitado</span></li>
                     </ul>
                     <a href="https://t.me/copyjesus_bot" target="_blank" class="w-full py-3 md:py-3 block cyber-button text-center">
-                        Empezar Gratis
+                        <span data-translate="plan_free_cta">Empezar Gratis</span>
                     </a>
                 </div>
 
+                <!-- Trader Plan -->
                 <div class="glass p-6 md:p-8 hover:scale-105 transition-all duration-300 border border-cyan-500/50 text-center-mobile">
-                    <h3 class="text-xl md:text-2xl font-bold mb-2 text-cyan-400">🟢 Trader</h3>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2 text-cyan-400">🟢 <span data-translate="plan_trader">Trader</span></h3>
                     <div class="text-3xl md:text-4xl font-bold mb-6 text-cyan-400">$29<span class="text-sm md:text-lg text-gray-400">/mes</span></div>
                     <ul class="space-y-2 md:space-y-3 mb-6 md:mb-8 text-sm md:text-base text-gray-300 text-center-mobile">
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>10 trades/día</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>5 canales KOLs</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Alertas premium</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Pump.fun pro</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_trader_1">10 trades/día</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_trader_2">5 canales KOLs</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_trader_3">Alertas premium</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_trader_4">Pump.fun pro</span></li>
                     </ul>
-                    <a href="https://t.me/copyjesus_bot" target="_blank" class="w-full py-3 md:py-3 block cyber-button text-center glow-cyan">
-                        Comenzar Ahora
-                    </a>
+                    <button onclick="openPaymentModal()" class="w-full py-3 md:py-3 cyber-button glow-cyan">
+                        <span data-translate="plan_trader_cta">Comenzar Ahora</span>
+                    </button>
                 </div>
 
+                <!-- Quantum Plan -->
                 <div class="glass p-6 md:p-8 hover:scale-105 transition-all duration-300 relative overflow-hidden group text-center-mobile">
-                    <div class="absolute -top-4 -right-4 bg-gradient-to-r from-magenta-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                    <div class="absolute -top-4 -right-4 bg-gradient-to-r from-magenta-500 to-purple-500 text-white px-4 py-1 rounded-full text-sm font-bold" data-translate="popular_tag">
                         MÁS POPULAR
                     </div>
-                    <h3 class="text-xl md:text-2xl font-bold mb-2 gradient-text">🔥 Quantum</h3>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2 gradient-text">🔥 <span data-translate="plan_quantum">Quantum</span></h3>
                     <div class="text-3xl md:text-4xl font-bold mb-6 gradient-text">$99<span class="text-sm md:text-lg text-gray-400">/mes</span></div>
                     <ul class="space-y-2 md:space-y-3 mb-6 md:mb-8 text-sm md:text-base text-gray-300 text-center-mobile">
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>∞ trades</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>∞ canales KOLs</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Copy automático</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Pump.fun expert</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Señales VIP</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_quantum_1">∞ trades</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_quantum_2">∞ canales KOLs</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_quantum_3">Copy automático</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_quantum_4">Pump.fun expert</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_quantum_5">Señales VIP</span></li>
                     </ul>
-                    <a href="https://t.me/copyjesus_bot" target="_blank" class="w-full py-3 md:py-3 block cyber-button glow-magenta text-center">
-                        Ir Quantum
-                    </a>
+                    <button onclick="openPaymentModal()" class="w-full py-3 md:py-3 cyber-button glow-magenta">
+                        <span data-translate="plan_quantum_cta">Ir Quantum</span>
+                    </button>
                 </div>
 
+                <!-- Enterprise Plan -->
                 <div class="glass p-6 md:p-8 hover:scale-105 transition-all duration-300 text-center-mobile">
-                    <h3 class="text-xl md:text-2xl font-bold mb-2">💎 KOL Master</h3>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">💎 <span data-translate="plan_enterprise">KOL Master</span></h3>
                     <div class="text-3xl md:text-4xl font-bold mb-6">$299<span class="text-sm md:text-lg text-gray-400">/mes</span></div>
                     <ul class="space-y-2 md:space-y-3 mb-6 md:mb-8 text-sm md:text-base text-gray-300 text-center-mobile">
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Todo Quantum</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>50 canales KOLs</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Estrategias custom</li>
-                        <li><i class="fas fa-check text-cyan-400 mr-2"></i>Soporte priority</li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_enterprise_1">Todo Quantum</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_enterprise_2">50 canales KOLs</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_enterprise_3">Estrategias custom</span></li>
+                        <li><i class="fas fa-check text-cyan-400 mr-2"></i><span data-translate="plan_enterprise_4">Soporte priority</span></li>
                     </ul>
-                    <button onclick="contactSales()" class="w-full py-3 md:py-3 cyber-button">
-                        Contactar
+                    <button onclick="openPaymentModal()" class="w-full py-3 md:py-3 cyber-button">
+                        <span data-translate="plan_enterprise_cta">Contactar</span>
                     </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Demo Section -->
-    <section id="demo" class="py-12 md:py-20 relative">
+    <!-- Payment Section -->
+    <section id="payment" class="py-12 md:py-20 relative">
         <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile">
-                DEMO EN VIVO
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-12" data-translate="payment_title">
+                💰 MÉTODOS DE PAGO
             </h2>
 
-            <div class="max-w-4xl mx-auto">
-                <div class="terminal">
-                    <div class="mb-4">
-                        <span class="text-green-400">$</span> Conectando con @copyjesus_bot en Telegram...
-                        <span class="text-cyan-400">✓</span>
-                    </div>
-                    <div class="mb-4">
-                        <span class="text-green-400">$</span> Añadiendo canal KOL: @crypto_influencer_pro
-                        <span class="text-cyan-400">✓</span>
-                    </div>
-                    <div class="mb-4">
-                        <span class="text-green-400">$</span> Monitorizando Pump.fun...
-                        <span class="text-yellow-400">⚡ Token detectado: NEWPEPE</span>
-                    </div>
-                    <div class="mb-4">
-                        <span class="text-green-400">$</span> KOL publicó: "Comprar NEWPEPE 🔥"
-                        <span class="text-cyan-400 pulse">Copiando...</span>
-                    </div>
-                    <div class="text-green-400">
-                        ✓ Trade ejecutado: 0.5 SOL → NEWPEPE<br>
-                        ✓ Compra en Pump.fun<br>
-                        ✓ Entrada: $0.0000123<br>
-                        ✓ Salida 5min después: $0.000045<br>
-                        ✓ Profit: +266% 💰
-                    </div>
-                </div>
+            <div class="glass p-6 md:p-8 mb-8">
+                <p class="text-lg text-center mb-6" data-translate="payment_desc">
+                    Aceptamos múltiples métodos de pago para tu comodidad. ¡Elige el que prefieras!
+                </p>
 
-                <div class="text-center mt-8 md:mt-12">
-                    <p class="text-lg md:text-xl text-gray-400 mb-6 text-center-mobile">
-                        Ve el bot copiando traders reales en tiempo real
-                    </p>
-                    <a href="https://t.me/copyjesus_bot" target="_blank" class="cyber-button">
-                        <span class="relative z-10">Ver en Telegram</span>
-                    </a>
+                <!-- Quick Pay Buttons -->
+                <div class="flex flex-col md:flex-row gap-4 justify-center flex-wrap">
+                    <button onclick="selectCrypto('SOL')" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-coins mr-2"></i>
+                        <span data-translate="pay_sol">Pagar con SOL</span>
+                    </button>
+                    <button onclick="selectCrypto('USDT')" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-dollar-sign mr-2"></i>
+                        <span data-translate="pay_usdt">Pagar con USDT</span>
+                    </button>
+                    <button onclick="selectCrypto('CARD')" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-bold">
+                        <i class="fas fa-credit-card mr-2"></i>
+                        <span data-translate="pay_card">Tarjeta</span>
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials -->
-    <section class="py-12 md:py-20 relative">
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-12 md:py-20 relative">
         <div class="container mx-auto px-4 md:px-6">
-            <h2 class="text-3xl md:text-5xl font-bold text-center mb-8 md:mb-16 orbitron gradient-text text-center-mobile">
-                USUARIOS GANANDO
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-12" data-translate="testimonials_title">
+                🏆 USUARIOS GANANDO
             </h2>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="glass p-6 text-center">
                     <div class="text-3xl font-bold gradient-text mb-4">+$1,250</div>
-                    <p class="text-gray-400 mb-2">Primer mes</p>
-                    <p class="text-sm text-gray-500 italic text-center-mobile">"Copiando a 3 KOLs, mis ganancias se triplicaron"</p>
+                    <p class="text-gray-400 mb-2" data-translate="testimonial1_period">Primer mes</p>
+                    <p class="text-sm text-gray-500 italic text-center-mobile" data-translate="testimonial1_text">"Copiando a 3 KOLs, mis ganancias se triplicaron"</p>
                 </div>
                 <div class="glass p-6 text-center">
                     <div class="text-3xl font-bold gradient-text mb-4">+580%</div>
-                    <p class="text-gray-400 mb-2">ROI en Pump.fun</p>
-                    <p class="text-sm text-gray-500 italic text-center-mobile">"El bot detectó tokens antes de que explotaran"</p>
+                    <p class="text-gray-400 mb-2" data-translate="testimonial2_period">ROI en Pump.fun</p>
+                    <p class="text-sm text-gray-500 italic text-center-mobile" data-translate="testimonial2_text">"El bot detectó tokens antes de que explotaran"</p>
                 </div>
                 <div class="glass p-6 text-center">
                     <div class="text-3xl font-bold gradient-text mb-4">2 horas</div>
-                    <p class="text-gray-400 mb-2">Tiempo diario activo</p>
-                    <p class="text-sm text-gray-500 italic text-center-mobile">"Dejo que el bot trabaje, yo solo reviso resultados"</p>
+                    <p class="text-gray-400 mb-2" data-translate="testimonial3_period">Tiempo diario</p>
+                    <p class="text-sm text-gray-500 italic text-center-mobile" data-translate="testimonial3_text">"Dejo que el bot trabaje, yo solo reviso resultados"</p>
                 </div>
             </div>
         </div>
@@ -881,20 +1014,22 @@
         <div class="container mx-auto px-4 md:px-6">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
                 <div>
-                    <div class="text-3xl md:text-5xl font-bold gradient-text counter" data-target="1500">0</div>
-                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile">Usuarios Activos</p>
+                    <div class="text-3xl md:text-5xl font-bold gradient-text">
+                        <span class="user-count">1,527</span>
+                    </div>
+                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile" data-translate="stat_users2">Usuarios Activos</p>
                 </div>
                 <div>
-                    <div class="text-3xl md:text-5xl font-bold gradient-text counter" data-target="5000000">0</div>
-                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile">Volumen Procesado</p>
+                    <div class="text-3xl md:text-5xl font-bold gradient-text stat-counter" data-target="5000000">0</div>
+                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile" data-translate="stat_volume">Volumen</p>
                 </div>
                 <div>
                     <div class="text-3xl md:text-5xl font-bold gradient-text">< 1<span class="text-2xl md:text-3xl">s</span></div>
-                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile">Ejecución</p>
+                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile" data-translate="stat_execution">Ejecución</p>
                 </div>
                 <div>
                     <div class="text-3xl md:text-5xl font-bold gradient-text">24/7</div>
-                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile">Monitoreo</p>
+                    <p class="text-sm md:text-base text-gray-400 mt-2 text-center-mobile" data-translate="stat_uptime">Monitoreo</p>
                 </div>
             </div>
         </div>
@@ -911,7 +1046,7 @@
                         </div>
                         <span class="orbitron text-lg font-bold gradient-text">QuantumBot</span>
                     </div>
-                    <p class="text-sm md:text-base text-gray-400 text-center-mobile">Copia a los profesionales. Gana como ellos.</p>
+                    <p class="text-sm md:text-base text-gray-400 text-center-mobile" data-translate="footer_tagline">Copia a los profesionales. Gana como ellos.</p>
                 </div>
 
                 <div class="flex space-x-4 md:space-x-6 justify-center">
@@ -931,144 +1066,812 @@
             </div>
 
             <div class="text-center mt-6 md:mt-8 pt-6 md:pt-8 border-t border-gray-800">
-                <p class="text-xs md:text-sm text-gray-500">© 2024 QuantumBot. Todos los derechos reservados.</p>
+                <p class="text-xs md:text-sm text-gray-500" data-translate="footer_copyright">© 2024 QuantumBot. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold" data-translate="payment_modal_title">Elige tu método de pago</h3>
+                <button onclick="closePaymentModal()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Crypto Options -->
+            <div id="cryptoOptions" style="display: none;">
+                <!-- SOL -->
+                <div class="crypto-option" onclick="copyAddress('sol-address')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">Solana (SOL)</h4>
+                            <p class="text-sm text-gray-400">Rápido y con comisiones bajas</p>
+                        </div>
+                        <i class="fab fa-helium text-purple-400 text-2xl"></i>
+                    </div>
+                    <div class="crypto-address">
+                        <span id="sol-address">Dode6Ht9U2kR1oJz53jFLucW31vqYSLj8U9s5DQyLmz1</span>
+                        <button class="copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- USDT TRC20 -->
+                <div class="crypto-option" onclick="copyAddress('usdt-address')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">USDT (TRC20)</h4>
+                            <p class="text-sm text-gray-400">Estable y económico</p>
+                        </div>
+                        <i class="fas fa-dollar-sign text-green-400 text-2xl"></i>
+                    </div>
+                    <div class="crypto-address">
+                        <span id="usdt-address">TRXNHQJXm1fu9W3nR7rJ2oG2gRGxXG8dKdL9sQ4tMhT</span>
+                        <button class="copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- USDC Solana -->
+                <div class="crypto-option" onclick="copyAddress('usdc-address')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">USDC (Solana)</h4>
+                            <p class="text-sm text-gray-400">Estable e instantáneo</p>
+                        </div>
+                        <i class="fas fa-dollar-sign text-blue-400 text-2xl"></i>
+                    </div>
+                    <div class="crypto-address">
+                        <span id="usdc-address">EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v</span>
+                        <button class="copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bitcoin -->
+                <div class="crypto-option" onclick="copyAddress('btc-address')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">Bitcoin (BTC)</h4>
+                            <p class="text-sm text-gray-400">El más popular</p>
+                        </div>
+                        <i class="fab fa-bitcoin text-orange-400 text-2xl"></i>
+                    </div>
+                    <div class="crypto-address">
+                        <span id="btc-address">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</span>
+                        <button class="copy-btn">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Option -->
+            <div id="cardOptions" style="display: none;">
+                <!-- PayPal -->
+                <div class="crypto-option" onclick="window.open('https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=quantumbot@proton.me&item_name=Trader+Plan&amount=29&currency_code=USD', '_blank')">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">PayPal</h4>
+                            <p class="text-sm text-gray-400">Tarjeta de crédito/débito</p>
+                        </div>
+                        <i class="fab fa-paypal text-blue-400 text-2xl"></i>
+                    </div>
+                </div>
+
+                <!-- Stripe -->
+                <div class="crypto-option" onclick="openStripe()">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-lg font-bold">Stripe</h4>
+                            <p class="text-size-sm text-gray-400">Pagos globales</p>
+                        </div>
+                        <i class="fas fa-credit-card text-purple-400 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Local Price Display -->
+            <div class="mt-6 p-4 bg-black/50 rounded-lg text-center">
+                <p class="text-sm text-gray-400" data-translate="local_price">Precio local:</p>
+                <p class="text-xl font-bold" id="localPrice">$29 USD</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Initialize particles
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const particles = [];
-        const particleCount = window.innerWidth < 768 ? 50 : 100;
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.radius = Math.random() * 2;
-                this.color = Math.random() > 0.5 ? '#00ffff' : '#ff00ff';
-                this.opacity = Math.random() * 0.5 + 0.2;
+        // Translation data
+        const translations = {
+            es: {
+                nav_features: "Características",
+                nav_pricing: "Precios",
+                nav_payment: "Pagos",
+                nav_testimonials: "Testimonios",
+                launch_bot: "Iniciar Bot",
+                hero_subtitle: "EL PODER DE LOS KOLS EN TUS MANOS",
+                hero_description: "🤖 <strong>Bot en Telegram</strong> que <strong>copia automáticamente</strong> las operaciones de tus influencers favoritos. Especializado en <strong>Solana</strong>, opera en <strong>Pump.fun</strong> y todos los DEXs principales. ¡Consigue las <strong>ganancias</strong> de los profesionales!",
+                cta_primary: "Copiar KOLs Ahora",
+                cta_secondary: "Ver Planes",
+                stat_users: "Usuarios Activos",
+                stat_telegram: "100% Telegram",
+                stat_copy: "Copy KOLs",
+                stat_profit: "Profit",
+                stat_users2: "Usuarios Activos",
+                stat_volume: "Volumen",
+                stat_execution: "Ejecución",
+                stat_uptime: "Monitoreo",
+                features_title: "CARACTERÍSTICAS CUÁNTICAS",
+                feature_telegram: "Telegram Native",
+                feature_telegram_desc: "100% funcional en Telegram. Sin necesidad de apps adicionales. Recibe alertas y ejecuta desde tu chat.",
+                feature_copy: "Copia KOLs",
+                feature_copy_desc: "Conecta canales de influencers y copia sus trades en tiempo real. Siempre un paso adelante del mercado.",
+                feature_pump: "Pump.fun Expert",
+                feature_pump_desc: "Especializado en Pump.fun. Detecta las nuevas tendencias antes de que exploten. Máximo profit en memes.",
+                feature_speed: "Solana Speed",
+                feature_speed_desc: "Ejecución en menos de 1 segundo. Optimizado para la velocidad de Solana. Nunca te quedes afuera.",
+                feature_multi: "Multi-DEX",
+                feature_multi_desc: "Opera en Raydium, Orca, Serum, Jupiter, Meteora y Pump.fun. Siempre el mejor precio.",
+                feature_secure: "Seguro Total",
+                feature_secure_desc: "Tus fondos siempre en tu wallet. Solo das permisos de trading. Sin riesgos de custodia.",
+                main_feature_title: "🎯 CARACTERÍSTICA PRINCIPAL: COPY TRADING 🎯",
+                main_feature_description: "Conecta los <strong>canales de tus KOLs favoritos</strong> y el bot <strong>copiará cada operación</strong> que hagan",
+                step1: "Añadir Canales",
+                step2: "Bot Detecta",
+                step3: "Tú Ganas",
+                pricing_title: "PLANES CUÁNTICOS",
+                plan_free: "Explorer",
+                plan_trader: "Trader",
+                plan_quantum: "Quantum",
+                plan_enterprise: "KOL Master",
+                plan_free_1: "3 trades/día",
+                plan_free_2: "1 canal KOL",
+                plan_free_3: "Telegram básico",
+                plan_free_4: "Pump.fun limitado",
+                plan_free_cta: "Empezar Gratis",
+                plan_trader_1: "10 trades/día",
+                plan_trader_2: "5 canales KOLs",
+                plan_trader_3: "Alertas premium",
+                plan_trader_4: "Pump.fun pro",
+                plan_trader_cta: "Comenzar Ahora",
+                plan_quantum: "Quantum",
+                plan_quantum_1: "∞ trades",
+                plan_quantum_2: "∞ canales KOLs",
+                plan_quantum_3: "Copy automático",
+                plan_quantum_4: "Pump.fun expert",
+                plan_quantum_5: "Señales VIP",
+                plan_quantum_cta: "Ir Quantum",
+                plan_enterprise_1: "Todo Quantum",
+                plan_enterprise_2: "50 canales KOLs",
+                plan_enterprise_3: "Estrategias custom",
+                plan_enterprise_4: "Soporte priority",
+                plan_enterprise_cta: "Contactar",
+                payment_title: "💰 MÉTODOS DE PAGO",
+                payment_desc: "Aceptamos múltiples métodos de pago para tu comodidad. ¡Elige el que prefieras!",
+                pay_sol: "Pagar con SOL",
+                pay_usdt: "Pagar con USDT",
+                pay_card: "Tarjeta",
+                popular_tag: "MÁS POPULAR",
+                testimonials_title: "🏆 USUARIOS GANANDO",
+                testimonial1_period: "Primer mes",
+                testimonial1_text: `"Copiando a 3 KOLs, mis ganancias se triplicaron"`,
+                testimonial2_period: "ROI en Pump.fun",
+                testimonial2_text: `"El bot detectó tokens antes de que explotaran"`,
+                testimonial3_period: "Tiempo diario",
+                testimonial3_text: `"Dejo que el bot trabaje, yo solo reviso resultados"`,
+                footer_tagline: "Copia a los profesionales. Gana como ellos.",
+                footer_copyright: "© 2024 QuantumBot. Todos los derechos reservados.",
+                payment_modal_title: "Elige tu método de pago",
+                local_price: "Precio local:"
+                dex_title: "DEXs & PLATFORMS",
+                dex_telegram: "100% Native",
+                dex_pump: "#1 Platform",
+                dex_raydium: "$2.1B TVL",
+                dex_orca: "$850M TVL",
+                dex_serum: "200+ pairs",
+                dex_jupiter: "Best Prices"
+            },
+            en: {
+                nav_features: "Features",
+                nav_pricing: "Pricing",
+                nav_payment: "Payment",
+                nav_testimonials: "Testimonials",
+                launch_bot: "Launch Bot",
+                hero_subtitle: "THE POWER OF KOLS IN YOUR HANDS",
+                hero_description: "🤖 <strong>Bot on Telegram</strong> that automatically copies trades from your favorite influencers. Specialized in <strong>Solana</strong>, operates on <strong>Pump.fun</strong> and all major DEXs. Get the <strong>profits</strong> of professionals!",
+                cta_primary: "Copy KOLs Now",
+                cta_secondary: "View Plans",
+                stat_users: "Active Users",
+                stat_telegram: "100% Telegram",
+                stat_copy: "Copy KOLs",
+                stat_profit: "Profit",
+                stat_users2: "Active Users",
+                stat_volume: "Volume",
+                stat_execution: "Execution",
+                stat_uptime: "Monitoring",
+                features_title: "QUANTUM FEATURES",
+                feature_telegram: "Telegram Native",
+                feature_telegram_desc: "100% functional on Telegram. No additional apps needed. Receive alerts and execute from your chat.",
+                feature_copy: "Copy KOLs",
+                feature_copy_desc: "Connect influencer channels and copy their trades in real-time. Always one step ahead of the market.",
+                feature_pump: "Pump.fun Expert",
+                feature_pump_desc: "Specialized in Pump.fun. Detects new trends before they explode. Maximum profit in memes.",
+                feature_speed: "Solana Speed",
+                feature_speed_desc: "Execution in under 1 second. Optimized for Solana speed. Never get left out.",
+                feature_multi: "Multi-DEX",
+                feature_multi_desc: "Operates on Raydium, Orca, Serum, Jupiter, Meteora, and Pump.fun. Always the best price.",
+                feature_secure: "Total Security",
+                feature_secure_desc: "Your funds always stay in your wallet. Only grant trading permissions. No custody risks.",
+                main_feature_title: "🎯 MAIN FEATURE: COPY TRADING 🎯",
+                main_feature_description: "Connect the <strong>channels of your favorite KOLs</strong> and the bot will <strong>copy every trade</strong> they make",
+                step1: "Add Channels",
+                step2: "Bot Detects",
+                step3: "You Profit",
+                pricing_title: "QUANTUM PLANS",
+                plan_free: "Explorer",
+                plan_trader: "Trader",
+                plan_quantum: "Quantum",
+                plan_enterprise: "KOL Master",
+                plan_free_1: "3 trades/day",
+                plan_free_2: "1 KOL channel",
+                plan_free_3: "Basic Telegram",
+                plan_free_4: "Limited Pump.fun",
+                plan_free_cta: "Start Free",
+                plan_trader_1: "10 trades/day",
+                plan_trader_2: "5 KOL channels",
+                plan_trader_3: "Premium alerts",
+                plan_trader_4: "Pump.fun pro",
+                plan_trader_cta: "Start Now",
+                plan_quantum: "Quantum",
+                plan_quantum_1: "∞ trades",
+                plan_quantum_2: "∞ KOL channels",
+                plan_quantum_3: "Auto-copy",
+                plan_quantum_4: "Pump.fun expert",
+                plan_quantum_5: "VIP Signals",
+                plan_quantum_cta: "Go Quantum",
+                plan_enterprise_1: "All Quantum",
+                plan_enterprise_2: "50 KOL channels",
+                plan_enterprise_3: "Custom strategies",
+                plan_enterprise_4: "Priority support",
+                plan_enterprise_cta: "Contact Sales",
+                payment_title: "💰 PAYMENT METHODS",
+                payment_desc: "We accept multiple payment methods for your convenience. Choose what works best for you!",
+                pay_sol: "Pay with SOL",
+                pay_usdt: "Pay with USDT",
+                pay_card: "Credit Card",
+                popular_tag: "MOST POPULAR",
+                testimonials_title: "🏆 USERS WINNING",
+                testimonial1_period: "First month",
+                testimonial1_text: `"Copying 3 KOLs, my profits tripled"`,
+                testimonial2_period: "ROI on Pump.fun",
+                testimonial2_text: `"Bot detected tokens before they exploded"`,
+                testimonial3_period: "Time daily",
+                testimonial3_text: `"Let the bot work, I just check results"`,
+                footer_tagline: "Copy the pros. Earn like them.",
+                footer_copyright: "© 2024 QuantumBot. All rights reserved.",
+                payment_modal_title: "Choose your payment method",
+                local_price: "Local Price:",
+                dex_title: "DEXs & PLATFORMS",
+                dex_telegram: "100% Native",
+                dex_pump: "#1 Platform",
+                dex_raydium: "$2.1B TVL",
+                dex_orca: "$850M TVL",
+                dex_serum: "200+ pairs",
+                dex_jupiter: "Best Prices"
+            },
+            pt: {
+                nav_features: "Recursos",
+                nav_pricing: "Preços",
+                nav_payment: "Pagamentos",
+                nav_testimonials: "Depoimentos",
+                launch_bot: "Iniciar Bot",
+                hero_subtitle: "O PODER DOS KOLS NAS SUAS MÃOS",
+                hero_description: "🤖 <strong>Bot no Telegram</strong> que <strong>copia automaticamente</strong> as operações de seus influencers favoritos. Especializado em <strong>Solana</strong>, opera em <strong>Pump.fun</strong> e todas as DEXs principais. Consiga os <strong>ganhos</strong> dos profissionais!",
+                cta_primary: "Copiar KOLs Agora",
+                cta_secondary: "Ver Planos",
+                stat_users: "Usuários Ativos",
+                stat_telegram: "100% Telegram",
+                stat_copy: "Copiar KOLs",
+                stat_profit: "Lucro",
+                stat_users2: "Usuários Ativos",
+                stat_volume: "Volume",
+                stat_execution: "Execução",
+                stat_uptime: "Monitoramento",
+                features_title: "CARACTERÍSTICAS QUÂNTICAS",
+                feature_telegram: "Nativo Telegram",
+                feature_telegram_desc: "100% funcional no Telegram. Sem necessidade de apps adicionais. Receba alertas e executa do seu chat.",
+                feature_copy: "Copiar KOLs",
+                feature_copy_desc: "Conecte canais de influencers e copia suas operações em tempo real. Sempre um passo à frente do mercado.",
+                feature_pump: "Pump.fun Expert",
+                feature_pump_desc: "Especializado em Pump.fun. Detecta novas tendências antes de explodirem. Máximo profit em memes.",
+                feature_speed: "Velocidade Solana",
+                feature_speed_desc: "Execução em menos de 1 segundo. Otimizado para velocidade da Solana. Nunca fique para trás.",
+                feature_multi: "Multi-DEX",
+                feature_multi_desc: "Opera em Raydium, Orca, Serum, Jupiter, Meteora e Pump.fun. Sempre o melhor preço.",
+                feature_secure: "Segurança Total",
+                feature_secure_desc: "Seus fundos sempre na sua wallet. Apenas conceda permissões de trading. Sem riscos de custódia.",
+                main_feature_title: "🎯 CARACTERÍSTICA PRINCIPAL: COPY TRADING 🎯",
+                main_feature_description: "Conecte os <strong>canais dos seus KOLs favoritos</strong> e o bot <strong>copiará cada operação</strong> que fizerem",
+                step1: "Adicionar Canais",
+                step2: "Bot Detecta",
+                step3: "Você Ganha",
+                pricing_title: "PLANOS QUÂNTICOS",
+                plan_free: "Explorer",
+                plan_trader: "Trader",
+                plan_quantum: "Quantum",
+                plan_enterprise: "KOL Master",
+                plan_free_1: "3 trades/dia",
+                plan_free_2: "1 canal KOL",
+                plan_free_3: "Telegram básico",
+                plan_free_4: "Pump.fun limitado",
+                plan_free_cta: "Começar Grátis",
+                plan_trader_1: "10 trades/dia",
+                plan_trader_2: "5 canais KOLs",
+                plan_trader_3: "Alertas premium",
+                plan_trader_4: "Pump.fun pro",
+                plan_trader_cta: "Começar Agora",
+                plan_quantum: "Quantum",
+                plan_quantum_1: "∞ trades",
+                plan_quantum_2: "∞ canais KOLs",
+                plan_quantum_3: "Copy automático",
+                plan_quantum_4: "Pump.fun expert",
+                plan_quantum_5: "Sinais VIP",
+                plan_quantum_cta: "Ir Quantum",
+                plan_enterprise_1: "Tudo Quantum",
+                plan_enterprise_2: "50 canais KOLs",
+                plan_enterprise_3: "Estratégias custom",
+                plan_enterprise_4: "Suporte priority",
+                plan_enterprise_cta: "Contatar",
+                payment_title: "💰 MÉTODOS DE PAGAMENTO",
+                payment_desc: "Aceitamos múltiplos métodos de pagamento para sua conveniência. Escolha o que preferir!",
+                pay_sol: "Pagar com SOL",
+                pay_usdt: "Pagar com USDT",
+                pay_card: "Cartão",
+                popular_tag: "MAIS POPULAR",
+                testimonials_title: "🏆 USUÁRIOS GANHADO",
+                testimonial1_period: "Primeiro mês",
+                testimonial1_text: `"Copiando 3 KOLs, meus lucros triplicaram"`,
+                testimonial2_period: "ROI em Pump.fun",
+                testimonial2_text: `"Bot detectou tokens antes de explodirem"`,
+                testimonial3_period: "Tempo diário",
+                testimonial3_text: `"Deixo que o bot trabalhe, eu só verifico resultados"`,
+                footer_tagline: "Copie os profissionais. Ganhe como eles.",
+                footer_copyright: "© 2024 QuantumBot. Todos os direitos reservados.",
+                payment_modal_title: "Escolha seu método de pagamento",
+                local_price: "Preço local:",
+                dex_title: "DEXs & PLATAFORMAS",
+                dex_telegram: "100% Nativo",
+                dex_pump: "#1 Platform",
+                dex_raydium: "$2.1B TVL",
+                dex_orca: "$850M TVL",
+                dex_serum: "200+ pares",
+                dex_jupiter: "Melhores Preços"
+            },
+            fr: {
+                nav_features: "Fonctionnalités",
+                nav_pricing: "Tarifs",
+                nav_payment: "Paiements",
+                nav_testimonials: "Témoignages",
+                launch_bot: "Démarrer Bot",
+                hero_subtitle: "LE POUVOIR DES KOLS DANS VOS MAINS",
+                hero_description: "🤖 <strong>Bot sur Telegram</strong> qui <strong>copie automatiquement</strong> les opérations de vos influenceurs préférés. Spécialisé en <strong>Solana</strong>, opère sur <strong>Pump.fun</strong> et tous les DEXs principaux. Obtenez les <strong>gains</strong> des professionnels!",
+                cta_primary: "Copier les KOLs Maintenant",
+                cta_secondary: "Voir Plans",
+                stat_users: "Utilisateurs Actifs",
+                stat_telegram: "100% Telegram",
+                stat_copy: "Copy KOLs",
+                stat_profit: "Profit",
+                stat_users2: "Utilisateurs Actifs",
+                stat_volume: "Volume",
+                stat_execution: "Exécution",
+                stat_uptime: "Surveillance",
+                features_title: "CARACTÉRISTIQUES QUANTIQUES",
+                feature_telegram: "Natif Telegram",
+                feature_telegram_desc: "100% fonctionnel sur Telegram. Pas besoin d'applications additionnelles. Recevez alertes et exécutez depuis votre chat.",
+                feature_copy: "Copier KOLs",
+                feature_copy_desc: "Connectez les canaux d'influenceurs et copiez leurs trades en temps réel. Toujours un temps devant le marché.",
+                feature_pump: "Pump.fun Expert",
+                feature_pump_desc: "Spécialisé en Pump.fun. Détecte les tendances avant qu'elles n'explosent. Profit maximum en memes.",
+                feature_speed: "Vitesse Solana",
+                feature_speed_desc: "Exécution en moins de 1 seconde. Optimisé pour la vitesse de Solana. Ne ratez jamais à la traîne.",
+                feature_multi: "Multi-DEX",
+                feature_multi_desc: "Opère sur Raydium, Orca, Serum, Jupiter, Meteora et Pump.fun. Toujours le meilleur prix.",
+                feature_secure: "Sécurité Totale",
+                feature_secure_desc: "Vos fonds restent toujours dans votre wallet. Donnez seulement les permissions de trading. Pas de risques de garde.",
+                main_feature_title: "🎯 CARACTÉRISTIQUE PRINCIPALE: COPY TRADING 🎯",
+                main_feature_description: "Connectez les <strong>chaux de vos KOLs préférés</strong> et le bot <strong>copiera chaque opération</strong> qu'ils font",
+                step1: "Ajouter Chaux",
+                step2: "Bot Détecte",
+                step3: "Vous Gagnez",
+                pricing_title: "PLANS QUANTIQUES",
+                plan_free: "Explorer",
+                plan_trader: "Trader",
+                plan_quantum: "Quantum",
+                plan_enterprise: "KOL Master",
+                plan_free_1: "3 trades/jour",
+                plan_free_2: "1 canal KOL",
+                plan_free_3: "Telegram de base",
+                plan_free_4: "Pump.fun limité",
+                plan_free_cta: "Commencer Gratuit",
+                plan_trader_1: "10 trades/jour",
+                plan_trader_2: "5 canaux KOLs",
+                plan_trader_3: "Alertes premium",
+                plan_trader_4: "Pump.fun pro",
+                plan_trader_cta: "Commencer Maintenant",
+                plan_quantum: "Quantum",
+                plan_quantum_1: "∞ trades",
+                plan_quantum_2: "∞ canaux KOLs",
+                plan_quantum_3: "Copy automatique",
+                plan_quantum_4: "Pump.fun expert",
+                plan_quantum_5: "Signaux VIP",
+                plan_quantum_cta: "Aller Quantum",
+                plan_enterprise_1: "Tout Quantum",
+                plan_enterprise_2: "50 canaux KOLs",
+                plan_enterprise_3: "Stratégies personnalisées",
+                plan_enterprise_4: "Support prioritaire",
+                plan_enterprise_cta: "Contacter les ventes",
+                payment_title: "💰 MÉTHODES DE PAIEMENT",
+                payment_desc: "Nous acceptons plusieurs méthodes de paiement pour votre confort. Choisissez celle qui vous convient!",
+                pay_sol: "Payer avec SOL",
+                pay_usdt: "Payer avec USDT",
+                pay_card: "Carte",
+                popular_tag: "PLUS POPULAIRE",
+                testimonials_title: "🏆 UTILISATEURS GAGNANTS",
+                testimonial1_period: "Premier mois",
+                testimonial1_text: `"Copiant 3 KOLs, mes bénéfices ont triplé"`,
+                testimonial2_period: "ROI sur Pump.fun",
+                testimonial2_text: `"Le bot a détecté les tokens avant qu'ils explosent"`,
+                testimonial3_period: "Temps quotidien",
+                testimonial3_text: `"Laissez le bot travailler, je ne vérifie que les résultats"`,
+                footer_tagline: "Copiez les professionnels. Gagnez comme eux.",
+                footer_copyright: "© 2024 QuantumBot. Tous droits réservés.",
+                payment_modal_title: "Choisissez votre méthode de paiement",
+                local_price: "Prix local:",
+                dex_title: "DEXs & PLATEFORMES",
+                dex_telegram: "100% Natif",
+                dex_pump: "#1 Platform",
+                dex_raydium: "$2.1B TVL",
+                dex_orca: "$850M TVL",
+                dex_serum: "200+ paires",
+                dex_jupiter: "Meilleurs Prix"
+            },
+            de: {
+                nav_features: "Funktionen",
+                nav_pricing: "Preise",
+                nav_payment: "Zahlung",
+                nav_testimonials: "Testimonials",
+                launch_bot: "Bot starten",
+                hero_subtitle: "DIE MACHT DER KOLS IN DEINEN HÄNDEN",
+                hero_description: "🤖 <strong>Bot auf Telegram</strong>, das <strong>kopiert automatisch</strong> Operationen deiner Influencer. Spezialisiert auf <strong>Solana</strong>, agiert auf <strong>Pump.fun</strong> und alle wichtigen DEXs. Hol die <strong>Gewinne</strong> der Profis!",
+                cta_primary: "KOLs jetzt kopieren",
+                cta_secondary: "Pläne ansehen",
+                stat_users: "Aktive Nutzer",
+                stat_telegram: "100% Telegram",
+                stat_copy: "Copy KOLs",
+                stat_profit: "Gewinn",
+                stat_users2: "Aktive Nutzer",
+                stat_volume: "Volumen",
+                stat_execution: "Ausführung",
+                stat_uptime: "Überwachung",
+                features_title: "QUANTEN-MERKMALE",
+                feature_telegram: "Telegram Native",
+                feature_telegram_desc: "100% funktionsfähig auf Telegram. Keine zusätzlichen Apps. Erhalte Benachrichtigungen und führe Trades von deinem Chat aus.",
+                feature_copy: "KOLs kopieren",
+                feature_copy_desc: "Verbinde Kanäle von Influencern und kopiere deren Trades in Echtzeit. Immer einen Schritt voraus.",
+                feature_pump: "Pump.fun Experte",
+                feature_pump_desc: "Spezialisiert auf Pump.fun. Erkennt neue Trends, bevor sie explodieren. Maximaler Gewinn bei Memes.",
+                feature_speed: "Solana Speed",
+                feature_speed_desc: "Ausführung in unter 1 Sekunde. Optimiert für Solana-Geschwindigkeit. Verpasse nie den Anschluss.",
+                feature_multi: "Multi-DEX",
+                feature_multi_desc: "Betreibt auf Raydium, Orca, Serum, Jupiter, Meteora und Pump.fun. Immer der beste Preis.",
+                feature_secure: "Absolute Sicherheit",
+                feature_secure_desc: "Deine Mittel bleiben immer in deiner Wallet. Gib nur Trading-Berechtigungen. Keine Verwahrungsrisiken.",
+                main_feature_title: "🎯 HAUPTMERKMALE: COPY TRADING 🎯",
+                main_feature_description: "Verbinde die <strong>Kanäle deiner Lieblings-KOLs</strong> und der Bot <strong>kopiert jede Operation</strong>, die sie machen",
+                step1: "Kanäle hinzufügen",
+                step2: "Bot erkennt",
+                step3: "Du gewinnst",
+                pricing_title: "QUANTUM-PLÄNE",
+                plan_free: "Explorer",
+                plan_trader: "Trader",
+                plan_quantum: "Quantum",
+                plan_enterprise: "KOL Master",
+                plan_free_1: "3 trades/Tag",
+                plan_free_2: "1 KOL Kanal",
+                plan_free_3: "Basis Telegram",
+                plan_free_4: "Pump.fun limitiert",
+                plan_free_cta: "Kostenlos starten",
+                plan_trader_1: "10 trades/Tag",
+                plan_trader_2: "5 KOL Kanäle",
+                plan_trader_3: "Premium Benachrichtigungen",
+                plan_trader_4: "Pump.fun pro",
+                plan_trader_cta: "Jetzt starten",
+                plan_quantum: "Quantum",
+                plan_quantum_1: "∞ Trades",
+                plan_quantum_2: "∞ KOL Kanäle",
+                plan_quantum_3: "Auto-Copy",
+                plan_quantum_4: "Pump.fun Expert",
+                plan_quantum_5: "VIP Signale",
+                plan_quantum_cta: "Quantum werden",
+                plan_enterprise_1: "Alles Quantum",
+                plan_enterprise_2: "50 KOL Kanäle",
+                plan_enterprise_3: "Custom Strategien",
+                plan_enterprise_4: "Priority Support",
+                plan_enterprise_cta: "Vertrieb kontaktieren",
+                payment_title: "💰 ZAHLUNGS METHODEN",
+                payment_desc: "Wir akzeptieren mehrere Zahlungsmethoden für deine Bequemfiend. Wähle aus, was dir am besten passt!",
+                pay_sol: "Mit SOL bezahlen",
+                pay_usdt: "Mit USDT bezahlen",
+                pay_card: "Kreditkarte",
+                popular_tag: "AM BELIEBTET",
+                testimonials_title: "🏆 NUTZER GEWINNEN",
+                testimonial1_period: "Erster Monat",
+                testimonial1_text: `"3 KOLs kopiert, meine Gewinne haben sich verdreifacht"`,
+                testimonial2_period: "ROI bei Pump.fun",
+                testimonial2_text: `"Bot erkannte Tokens, bevor sie explodierten"`,
+                testimonial3_period: "Täglich aktiv",
+                testimonial3_text: `"Lass den Bot arbeiten, ich prüfe nur Ergebnisse"`,
+                footer_tagline: "Kopiere die Profis. Gewinne wie sie.",
+                footer_copyright: "© 2024 QuantumBot. Alle Rechte vorbehalten.",
+                payment_modal_title: "Wähle deine Zahlungsmethode",
+                local_price: "Lokaler Preis:",
+                dex_title: "DEXs & PLATTFORMEN",
+                dex_telegram: "100% Nativ",
+                dex_pump: "#1 Plattform",
+                dex_raydium: "$2.1B TVL",
+                dex_orca: "$850M TVL",
+                dex_serum: "200+ Paare",
+                dex_jupiter: "Beste Preise"
             }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-                if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.opacity;
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        // Create particles
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        // Connect particles
-        function connectParticles() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = particles[i].color;
-                        ctx.globalAlpha = 0.1 * (1 - distance / 100);
-                        ctx.stroke();
-                        ctx.globalAlpha = 1;
-                    }
-                }
-            }
-        }
-
-        // Animation loop
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-
-            connectParticles();
-            requestAnimationFrame(animate);
-        }
-
-        animate();
-
-        // Resize canvas
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Smooth scroll
-        function scrollToSection(sectionId) {
-            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Counter animation
-        const counters = document.querySelectorAll('.counter');
-        const speed = 200;
-
-        const countUp = () => {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const count = +counter.innerText.replace(/[^0-9]/g, '');
-                const increment = target / speed;
-
-                if (count < target) {
-                    counter.innerText = Math.ceil(count + increment).toLocaleString();
-                    setTimeout(countUp, 1);
-                } else {
-                    counter.innerText = target.toLocaleString();
-                }
-            });
         };
 
-        // Trigger counter on scroll
-        const observerOptions = {
-            threshold: 0.5
-        };
+        // Detect language
+        function detectLanguage() {
+            // Check URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            if (lang && translations[lang]) {
+                return lang;
+            }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    countUp();
-                    observer.unobserve(entry.target);
+            // Check browser language
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang) {
+                const langCode = browserLang.split('-')[0];
+                if (translations[langCode]) {
+                    return langCode;
+                }
+            }
+
+            // Detect from timezone
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const regionMap = {
+                'America/New_York': 'en',
+                'America/Los_Angeles': 'en',
+                'Europe/London': 'en',
+                'Europe/Paris': 'fr',
+                'Europe/Berlin': 'de',
+                'Europe/Rome': 'it',
+                'Europe/Madrid': 'es',
+                'Europe/Moscow': 'ru',
+                'Asia/Tokyo': 'ja',
+                'Asia/Seoul': 'ko',
+                'Asia/Shanghai': 'zh'
+            };
+
+            return regionMap[timezone] || 'en';
+        }
+
+        // Set language
+        let currentLang = detectLanguage();
+
+        // Update page language
+        document.documentElement.lang = currentLang;
+
+        // Update all elements with data-translate attribute
+        function updateTranslations() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    element.innerHTML = translations[currentLang][key];
                 }
             });
-        }, observerOptions);
 
-        counters.forEach(counter => {
-            observer.observe(counter.parentElement);
+            // Update title
+            const title = document.querySelector('title');
+            if (title) {
+                title.textContent = translations[currentLang].hero_title + ' - ' + translations[currentLang].hero_subtitle;
+            }
+
+            // Update meta description
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.content = translations[currentLang].hero_description;
+            }
+
+            // Update local price based on region
+            updateLocalPrice();
+
+            // Update active language button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-lang') === currentLang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Language switcher event listeners
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentLang = btn.getAttribute('data-lang');
+                updateTranslations();
+            });
         });
 
-        // Contact sales
-        function contactSales() {
-            alert('Contact our sales team:\n\nEmail: sales@quantumbot.io\nTelegram: @quantum_support\n\nWe\'ll get back to you within 24 hours.');
+        // Initial translation
+        updateTranslations();
+
+        // Update local price based on region
+        function updateLocalPrice() {
+            const prices = {
+                'US': { usd: '$', rate: 1 },
+                'EU': { usd: '€', rate: 0.92 },
+                'UK': { usd: '£', rate: 0.79 },
+                'JP': { usd: '¥', rate: 149.50 },
+                'KR': { usd: '₩', rate: 1290 },
+                'BR': { usd: 'R$', rate: 4.95 },
+                'MX': { usd: '$', rate: 17.20 },
+                'CO': { usd: '$', rate: 3800 },
+                'AR': { usd: '$', rate: 350 },
+                'PE': { usd: 's/.', rate: 3.60 }
+            };
+
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            let region = 'US'; // Default
+
+            if (timezone.includes('Europe')) region = 'EU';
+            else if (timezone.includes('America/Los_Angeles')) region = 'US';
+            else if (timezone.includes('America/Sao_Paulo')) region = 'BR';
+            else if (timezone.includes('Asia/Tokyo')) region = 'JP';
+            else if (timezone.includes('Asia/Seoul')) region = 'KR';
+
+            const localPrice = 29 * (prices[region]?.rate || 1);
+            const localPriceElement = document.getElementById('localPrice');
+            if (localPriceElement) {
+                localPriceElement.textContent = `${prices[region]?.usd || '$'}${localPrice.toFixed(0)}`;
+            }
         }
+
+        // Copy address function
+        function copyAddress(id) {
+            const address = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(address).then(() => {
+                // Show success message
+                const btn = event.target.closest('.copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+
+        // Payment modal functions
+        function openPaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'none';
+        }
+
+        function selectCrypto(currency) {
+            // Hide all payment options first
+            document.getElementById('cryptoOptions').style.display = 'none';
+            document.getElementById('cardOptions').style.display = 'none';
+
+            // Show selected crypto option
+            document.getElementById('cryptoOptions').style.display = 'block';
+
+            // Show appropriate copy button
+            if (currency === 'SOL') {
+                document.getElementById('sol-address').scrollIntoView({ behavior: 'smooth' });
+            } else if (currency === 'USDT') {
+                document.getElementById('usdt-address').scrollIntoView({ behavior: 'smooth' });
+            } else if (currency === 'CARD') {
+                document.getElementById('cardOptions').style.display = 'block';
+            }
+        }
+
+        function openStripe() {
+            // Stripe implementation
+            const stripe = Stripe('pk_test_...');
+            // Implement Stripe checkout
+        }
+
+        // Update user counter with animation
+        function updateUserCount() {
+            const userCount = 1500 + Math.floor(Math.random() * 100);
+            document.querySelectorAll('.user-count').forEach(el => {
+                el.textContent = userCount.toLocaleString();
+            });
+        }
+
+        // Start user counter animation
+        setInterval(updateUserCount, 5000);
+
+        // Volume counter animation
+        function animateValue(element, target, duration = 2000) {
+            const start = 0;
+            const increment = target / duration;
+            const timer = setInterval(() => {
+                const current = parseInt(element.innerText.replace(/[^0-9]/g, ''));
+                const newValue = Math.ceil(start + increment * (Date.now() - start_time));
+                element.innerText = newValue.toLocaleString();
+
+                if (newValue >= target) {
+                    clearInterval(timer);
+                    element.innerText = target.toLocaleString();
+                }
+            }, 10);
+        }
+
+        // Initialize volume counter
+        const volumeCounter = document.querySelector('.stat-counter');
+        if (volumeCounter) {
+            animateValue(volumeCounter, 5000000);
+        }
+
+        // Floating notification
+        function showNotification(name, action, profit) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <strong>${name}</strong> ${action}
+                ${profit ? `<span class="text-green-400">+${profit}</span>` : ''}
+            `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Show random notifications
+        const notifications = [
+            { name: 'John', action: 'gained $234', profit: '$234' },
+            { name: 'María', action: 'upgraded to Pro', profit: '' },
+            { name: 'Ahmed', action: 'made $567', profit: '$567' },
+            { name: 'Sophie', action: 'upgraded to Pro', profit: '' }
+        ];
+
+        setInterval(() => {
+            const randomNotif = notifications[Math.floor(Math.random() * notifications.length)];
+            showNotification(randomNotif.name, randomNotif.action, randomNotif.profit);
+        }, 10000);
+
+        // Initialize
+        updateLocalPrice();
+
+        // Add smooth scroll to sections
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = anchor.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
     </script>
 </body>
 </html>
